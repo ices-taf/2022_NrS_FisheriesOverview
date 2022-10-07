@@ -312,6 +312,12 @@ dat <- format_annex_table(clean_status, year)
 write.taf(dat, file= paste0(year_cap, "_", ecoreg, "SAG_Annex_table.csv"), dir = "report", quote=TRUE)
 
 format_annex_table_html(dat, cap_year, ecoreg_code)
+dat2 <- dat[-(1:100),]
+format_annex_table_html(dat2, cap_year, ecoreg_code)
+dat3 <- dat2[-(1:100),]
+format_annex_table_html(dat3, cap_year, ecoreg_code)
+
+
 # This annex table has to be edited by hand,
 # For SBL and GES only one values is reported,
 # the one in PA for SBL and the one in MSY for GES
