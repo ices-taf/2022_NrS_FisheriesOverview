@@ -15,11 +15,11 @@ sid <- read.taf("bootstrap/data/ICES_StockInformation/sid.csv")
 
 hist <- read.taf("bootstrap/data/ICES_nominal_catches/ICES_historical_catches.csv")
 official <- read.taf("bootstrap/data/ICES_nominal_catches/ICES_2006_2019_catches.csv")
-prelim <- read.taf("bootstrap/data/ICES_nominal_catches/ICES_preliminary_catches.csv")
+# prelim <- read.taf("bootstrap/data/ICES_nominal_catches/ICES_preliminary_catches.csv")
 
 catch_dat <-
   format_catches(2022, "Greater North Sea",
-    hist, official, prelim, species_list, sid)
+    hist, official, NULL, species_list, sid)
 
 write.taf(catch_dat, dir = "data", quote = TRUE)
 
@@ -44,11 +44,11 @@ write.taf(clean_status, dir = "data", quote = TRUE)
 
 # 3: STECF effort and landings
 
-effort <- read.taf("bootstrap/initial/FDI effort by country.csv", check.names = TRUE)
-names(effort)
-effort$Sub.region <- tolower(effort$Sub.region)
-unique(effort$Sub.region)
-effort_NrS <- dplyr::filter(effort, grepl("27.4.a|27.4.b|27.4.c|27.4.d|27.4.e", Sub.region))
+# effort <- read.taf("bootstrap/initial/FDI effort by country.csv", check.names = TRUE)
+# names(effort)
+# effort$Sub.region <- tolower(effort$Sub.region)
+# unique(effort$Sub.region)
+# effort_NrS <- dplyr::filter(effort, grepl("27.4.a|27.4.b|27.4.c|27.4.d|27.4.e", Sub.region))
 
 
 landings1 <- read.taf("bootstrap/initial/Landings_2014.csv", check.names = TRUE)
@@ -65,7 +65,7 @@ landings_NrS <- dplyr::filter(landings, grepl("27.4.a|27.4.b|27.4.c|27.4.d|27.4.
 
 # need to group gears, Sarah help.
 unique(landings_NrS$Gear.Type)
-unique(effort_NrS$Gear.Type)
+# unique(effort_NrS$Gear.Type)
 
 landings_NrS <- dplyr::mutate(landings_NrS, gear_class = case_when(
         grepl("TBB", Gear.Type) ~ "Beam trawl",
@@ -80,19 +80,19 @@ landings_NrS <- dplyr::mutate(landings_NrS, gear_class = case_when(
 )
 )
 
-effort_NrS <- dplyr::mutate(effort_NrS, gear_class = case_when(
-        grepl("TBB", Gear.Type) ~ "Beam trawl",
-        grepl("DRB|DRH|HMD", Gear.Type) ~ "Dredge",
-        grepl("GNS|GND|GTN|LHP|LLS|FPN|GTR|FYK|LLD|SDN|LTL|LNB", Gear.Type) ~ "Static/Gill net/LL",
-        grepl("OTT|OTB|PTB|SSC|SB|SPR|SV", Gear.Type) ~ "Otter trawl/seine",
-        grepl("PTM|OTM|PS", Gear.Type) ~ "Pelagic trawl/seine",
-        grepl("FPO", Gear.Type) ~ "Pots",
-        grepl("NK|NO|LHM", Gear.Type) ~ "other",
-        is.na(Gear.Type) ~ "other",
-        TRUE ~ "other"
-)
-)
+# effort_NrS <- dplyr::mutate(effort_NrS, gear_class = case_when(
+#         grepl("TBB", Gear.Type) ~ "Beam trawl",
+#         grepl("DRB|DRH|HMD", Gear.Type) ~ "Dredge",
+#         grepl("GNS|GND|GTN|LHP|LLS|FPN|GTR|FYK|LLD|SDN|LTL|LNB", Gear.Type) ~ "Static/Gill net/LL",
+#         grepl("OTT|OTB|PTB|SSC|SB|SPR|SV", Gear.Type) ~ "Otter trawl/seine",
+#         grepl("PTM|OTM|PS", Gear.Type) ~ "Pelagic trawl/seine",
+#         grepl("FPO", Gear.Type) ~ "Pots",
+#         grepl("NK|NO|LHM", Gear.Type) ~ "other",
+#         is.na(Gear.Type) ~ "other",
+#         TRUE ~ "other"
+# )
+# )
 
 unique(landings_NrS[c("Gear.Type", "gear_class")])
-unique(effort_NrS[c("Gear.Type", "gear_class")])
+# unique(effort_NrS[c("Gear.Type", "gear_class")])
 

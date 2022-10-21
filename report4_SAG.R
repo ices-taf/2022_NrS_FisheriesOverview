@@ -25,12 +25,6 @@ catch_trends <- read.taf("model/catch_trends.csv")
 clean_status <- read.taf("data/clean_status.csv")
 
 
-#set year and month for captions:
-# cap_month = "November"
-# cap_year = "2021"
-# set year for plot calculations
-
-
 
 # set year for plot calculations
 
@@ -50,6 +44,8 @@ unique(trends$FisheriesGuild)
 # 1. Benthic
 #~~~~~~~~~~~
 plot_stock_trends(trends, guild="benthic", cap_year, cap_month , return_data = FALSE)
+trends2 <- trends %>% filter(StockKeyLabel != "anf.27.3a46")
+plot_stock_trends(trends2, guild="benthic", cap_year, cap_month , return_data = FALSE)
 ggplot2::ggsave(paste0(year_cap, "_", ecoreg,"SAG_Trends_benthic.png"), path = "report/", width = 178, height = 130, units = "mm", dpi = 300)
 
 dat <- plot_stock_trends(trends, guild="benthic", cap_year , cap_month, return_data = TRUE)
@@ -58,14 +54,24 @@ write.taf(dat, file =paste0(year_cap, "_", ecoreg,"SAG_Trends_benthic.png"), dir
 # 2. Demersal
 #~~~~~~~~~~~
 plot_stock_trends(trends, guild="demersal", cap_year, cap_month , return_data = FALSE)
+trends2 <- trends %>% filter(StockKeyLabel != "cod.27.21")
+trends2 <- trends2 %>% filter(StockKeyLabel != "san.sa.1r")
+trends2 <- trends2 %>% filter(StockKeyLabel != "san.sa.2r")
+trends2 <- trends2 %>% filter(StockKeyLabel != "san.sa.3r")
+trends2 <- trends2 %>% filter(StockKeyLabel != "san.sa.4")
+plot_stock_trends(trends2, guild="demersal", cap_year, cap_month , return_data = FALSE)
 ggplot2::ggsave(paste0(year_cap, "_", ecoreg,"SAG_Trends_demersal.png"), path = "report/", width = 178, height = 130, units = "mm", dpi = 300)
 
-dat <- plot_stock_trends(trends, guild="demersal", cap_year , cap_month, return_data = TRUE)
+dat <- plot_stock_trends(trends2, guild="demersal", cap_year , cap_month, return_data = TRUE)
 write.taf(dat, file =paste0(year_cap, "_", ecoreg,"SAG_Trends_demersal.png"), dir = "report")
 
 # 3. Pelagic
 #~~~~~~~~~~~
 plot_stock_trends(trends, guild="pelagic", cap_year, cap_month , return_data = FALSE)
+trends2 <- trends %>% filter(StockKeyLabel != "nop.27.3a4")
+trends2 <- trends2 %>% filter(StockKeyLabel != "bsf.27.nea")
+trends2 <- trends2 %>% filter(StockKeyLabel != "hom.27.3a4bc7d")
+plot_stock_trends(trends2, guild="pelagic", cap_year, cap_month , return_data = FALSE)
 ggplot2::ggsave(paste0(year_cap, "_", ecoreg,"SAG_Trends_pelagic.png"), path = "report/", width = 178, height = 130, units = "mm", dpi = 300)
 
 dat <- plot_stock_trends(trends, guild="pelagic", cap_year, cap_month, return_data = TRUE)
@@ -132,7 +138,7 @@ write.taf(dat, file =paste0(year_cap, "_", ecoreg, "_EO_SAG_SpeciesGuildList.csv
 
 bar <- plot_CLD_bar(catch_current, guild = "demersal", caption = TRUE, cap_year, cap_month, return_data = FALSE)
 catch_current <- catch_current %>% filter(StockKeyLabel != "ele.2737.nea")
-# catch_current <- catch_current %>% filter(StockKeyLabel != "pol.27.67")
+catch_current <- catch_current %>% filter(StockKeyLabel != "pol.27.67")
 bar <- plot_CLD_bar(catch_current, guild = "demersal", caption = TRUE, cap_year, cap_month, return_data = FALSE)
 bar_dat <- plot_CLD_bar(catch_current, guild = "demersal", caption = TRUE, cap_year , cap_month , return_data = TRUE)
 write.taf(bar_dat, file =paste0(year_cap, "_", ecoreg, "SAG_Current_demersal.csv"),dir = "report" )
@@ -256,13 +262,28 @@ dev.off()
 #~~~~~~~~~~~~~~~#
 discardsA <- plot_discard_trends(catch_trends, year, cap_year, cap_month )
 catch_trends2 <- catch_trends %>% filter(FisheriesGuild != "elasmobranch")
+catch_trends2 <- unique(catch_trends2)
+catch_trends2$ID <- paste0(catch_trends2$Year,catch_trends2$StockKeyLabel,catch_trends2$FisheriesGuild)
+catch_trends2 <- catch_trends2 %>% arrange(rowSums(is.na(.))) %>% distinct(ID, .keep_all = TRUE)
+
 discardsA <- plot_discard_trends(catch_trends2, year, cap_year, cap_month )
 
-catch_trends3 <- catch_trends2 %>% filter(discards > 0)
-df2 <- df %>% filter(discards >0)
-discardsB <- plot_discard_current(catch_trends3, year,position_letter = "b)", cap_year , cap_month , caption = FALSE)
+catch_trends3 <- catch_trends2 %>% filter(Discards > 0)
+catch_trends3 <- unique(catch_trends3)
+# catch_trends3$ID <- paste0(catch_trends3$Year,catch_trends3$StockKeyLabel,catch_trends3$FisheriesGuild)
+# check <- catch_trends3 %>% arrange(rowSums(is.na(.))) %>% distinct(ID, .keep_all = TRUE)
+# check <- check[, -18]
+df5 <- catch_trends3
 
-discardsC <- plot_discard_current(catch_trends2, year,position_letter = "c)", cap_year , cap_month, caption=TRUE )
+# df2 <- df %>% filter(discards >0)
+discardsB <- plot
+# catch_trends2 <- unique(catch_trends2)
+# catch_trends2$ID <- paste0(catch_trends2$Year,catch_trends2$StockKeyLabel,catch_trends2$FisheriesGuild)
+# check <- catch_trends2 %>% arrange(rowSums(is.na(.))) %>% distinct(ID, .keep_all = TRUE)
+# check <- check[, -11]
+df5 <- catch_trends2
+
+discardsC <- plot
 
 #Need to change order?
 dat <- plot_discard_current(catch_trends, year, cap_year, cap_month , return_data = TRUE)

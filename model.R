@@ -8,8 +8,9 @@ taf.library(icesFO)
 
 mkdir("model")
 
-# clean_sag$MSYBtrigger[which(clean_sag$StockKeyLabel == "ank.27.78abd")] <- "1"
-# clean_sag$FMSY[which(clean_sag$StockKeyLabel == "ank.27.78abd")] <- "1"
+clean_sag$MSYBtrigger[which(clean_sag$StockKeyLabel == "ple.27.7e")] <- "0.39"
+clean_sag$MSYBtrigger[which(clean_sag$StockKeyLabel == "spr.27.7de")] <- "11527.9"
+clean_sag$FMSY[which(clean_sag$StockKeyLabel == "spr.27.7de")] <- "0.0857"
 
 #A. Trends by guild
 
