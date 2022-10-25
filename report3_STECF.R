@@ -342,7 +342,7 @@ plot_stecf <- function(df, type, variable = NULL, cap_year, cap_month, line_coun
         myColors <- colList[1:length(unique(dat$type_var))]
         names(myColors) <- levels(dat$type_var)
         myColors["other"] <- "#7F7F7F"
-        if(type == "effort"){
+        if(type == "landings"){
                 dat$typeTotal <- dat$typeTotal/1000
         }
         
