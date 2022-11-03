@@ -44,7 +44,7 @@ clean_status <- format_sag_status(status, 2022, "Greater North Sea")
 # >>>>>>> becf649436a609adb71fbd30c156db050dc615da
 # 
 
-write.taf(clean_sag, dir = "data")
+write.taf(clean_sag, dir = "data", quote = TRUE)
 write.taf(clean_status, dir = "data", quote = TRUE)
 
 # 3: STECF effort and landings

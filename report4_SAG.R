@@ -71,10 +71,19 @@ plot_stock_trends(trends, guild="pelagic", cap_year, cap_month , return_data = F
 trends2 <- trends %>% filter(StockKeyLabel != "nop.27.3a4")
 trends2 <- trends2 %>% filter(StockKeyLabel != "bsf.27.nea")
 trends2 <- trends2 %>% filter(StockKeyLabel != "hom.27.3a4bc7d")
+
+##### eliminate year 2022 for F and 2023 for SSB for whb.27.1-91214
+trends2 <- trends2[!(trends2$StockKeyLabel == "whb.27.1-91214" & trends2$Metric == "F_FMEAN" & trends2$Year == 2022) &
+                !(trends2$StockKeyLabel == "whb.27.1-91214" & trends2$Metric == "F_FMSY" & trends2$Year == 2022) &
+                !(trends2$StockKeyLabel == "MEAN" & trends2$Metric == "F_FMSY" & trends2$Year == 2022) &
+                !(trends2$StockKeyLabel == "whb.27.1-91214" & trends2$Metric == "SSB_MSYBtrigger" & trends2$Year == 2023) &
+                !(trends2$StockKeyLabel == "MEAN" & trends2$Metric == "SSB_MSYBtrigger" & trends2$Year == 2023),]
+
+
 plot_stock_trends(trends2, guild="pelagic", cap_year, cap_month , return_data = FALSE)
 ggplot2::ggsave(paste0(year_cap, "_", ecoreg,"SAG_Trends_pelagic.png"), path = "report/", width = 178, height = 130, units = "mm", dpi = 300)
 
-dat <- plot_stock_trends(trends, guild="pelagic", cap_year, cap_month, return_data = TRUE)
+dat <- plot_stock_trends(trends2, guild="pelagic", cap_year, cap_month, return_data = TRUE)
 write.taf(dat, file =paste0(year_cap, "_", ecoreg,"SAG_Trends_pelagic.png"), dir = "report")
 
 # 4. Elasmobranchs
@@ -101,21 +110,29 @@ write.taf(dat, file =paste0(year_cap, "_", ecoreg,"SAG_Trends_crustacean.png"), 
 guild <- read.taf("model/guild.csv")
 trends <- read.taf("model/trends.csv")
 # For this EO, they need separate plots with all info
+max(guild3$Year[guild3$FisheriesGuild == "crustacean"])
 
-guild2 <- guild %>% filter(Metric == "F_FMSY")
+guild <- guild[!(guild$FisheriesGuild == "pelagic" & guild$Metric == "F_FMSY" & guild$Year == 2022) &
+                !(guild$FisheriesGuild == "pelagic" & guild$Metric == "SSB_MSYBtrigger" & guild$Year == 2023) &
+                !(guild$FisheriesGuild == "crustacean" & guild$Metric == "F_FMSY" & guild$Year == 2021) &
+                !(guild$FisheriesGuild == "crustacean" & guild$Metric == "SSB_MSYBtrigger" & guild$Year == 2022),]
+
+guild2 <- guild %>% filter(Metric == "F_FMSY") %>% filter(FisheriesGuild != "elasmobranch")
 plot_guild_trends(guild, cap_year, cap_month,return_data = FALSE )
+
 guild2 <- guild2 %>% filter(FisheriesGuild != "MEAN")
 plot_guild_trends(guild2, cap_year , cap_month,return_data = FALSE )
 ggplot2::ggsave(paste0(year_cap, "_", ecoreg, "_EO_SAG_GuildTrends_F.png"), path = "report/", width = 178, height = 130, units = "mm", dpi = 300)
 # ggplot2::ggsave("2019_BtS_EO_GuildTrends_noMEAN_F.png", path = "report/", width = 178, height = 130, units = "mm", dpi = 300)
 
-guild2 <- guild %>% filter(Metric == "SSB_MSYBtrigger")
+guild2 <- guild %>% filter(Metric == "SSB_MSYBtrigger") %>% filter(FisheriesGuild != "elasmobranch")
 guild3 <- guild2 %>% dplyr::filter(FisheriesGuild != "MEAN")
 plot_guild_trends(guild3, cap_year, cap_month,return_data = FALSE )
 ggplot2::ggsave(paste0(year_cap, "_", ecoreg, "_EO_SAG_GuildTrends_SSB_1900.png"), path = "report/", width = 178, height = 130, units = "mm", dpi = 300)
+
 guild3 <- guild3 %>% dplyr::filter(Year > 1960)
 plot_guild_trends(guild3, cap_year, cap_month,return_data = FALSE )
-ggplot2::ggsave(paste0(year_cap, "_", ecoreg, "_EO_SAG_GuildTrends_SSB_1960.png"), path = "report/", width = 178, height = 130, units = "mm", dpi = 300)
+ggplot2::ggsave(paste0(year_cap, "_", ecoreg, "_EO_SAG_GuildTrends_SSB_1960_1.png"), path = "report/", width = 178, height = 130, units = "mm", dpi = 300)
 
 
 
@@ -332,6 +349,8 @@ write.taf(dat, file= paste0(year_cap, "_", ecoreg, "SAG_GESpies.csv"),dir ="repo
 dat <- format_annex_table(clean_status, year)
 
 write.taf(dat, file= paste0(year_cap, "_", ecoreg, "SAG_Annex_table.csv"), dir = "report", quote=TRUE)
+
+dat <- read.taf("report/2022_NrSSAG_Annex_table.csv")
 
 format_annex_table_html(dat, cap_year, ecoreg_code)
 dat2 <- dat[-(1:100),]
