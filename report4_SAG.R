@@ -83,7 +83,8 @@ plot_stock_trends(trends, guild="elasmobranch", cap_year, cap_month ,return_data
 ggplot2::ggsave(paste0(year_cap, "_", ecoreg,"SAG_Trends_elasmobranch.png"), path = "report/", width = 178, height = 130, units = "mm", dpi = 300)
 # 
 dat <- plot_stock_trends(trends, guild="elasmobranch", cap_year , cap_month , return_data = TRUE)
-write.taf(dat, file =file_name(cap_year,ecoreg_code,"SAG_Trends_elasmobranch", ext = "csv"), dir = "report" )
+write.taf(dat, file =paste0(year_cap, "_", ecoreg,"SAG_Trends_elasmobranch.png"), dir = "report")
+
 
 # 5. Crustacean
 #~~~~~~~~~~~
